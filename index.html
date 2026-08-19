@@ -143,7 +143,8 @@ let S={books:[],view:'library',bookId:null,step:0,draft:null,phase:'ask',item:nu
   nb:{title:'',author:'',pages:'',type:'nonfiction'},fin:{t1:'',t2:'',t3:'',app:''}};
 
 function load(){
-  try{const r=localStorage.getItem(KEY); if(r){const b=JSON.parse(r); if(Array.isArray(b)&&b.length){S.books=b;return;}}}catch(e){}
+  // An empty shelf is a valid saved state — only seed when nothing was ever stored.
+  try{const r=localStorage.getItem(KEY); if(r!==null){const b=JSON.parse(r); if(Array.isArray(b)){S.books=b;return;}}}catch(e){}
   S.books=seed(); save();
 }
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S.books));}catch(e){toast('Couldn\u2019t save \u2014 storage is full or blocked');}}
@@ -216,12 +217,14 @@ function vLibrary(){
     <span style="width:6px;height:6px;border-radius:50%;background:var(--gold);flex:none"></span>
     <div><div style="font-size:14px;color:var(--goldT)">${total===1?'1 retrieval check waiting':total+' retrieval checks waiting'}</div>
     <div class="kick" style="margin-top:3px">Answer from memory before you read on</div></div></div>`:''}
-  <div class="col">${shelf||'<div class="card small">Nothing on the shelf yet.</div>'}</div>
-  <button class="btn btn-secondary btn-block" data-act="add">Add a book</button>
+  <div class="col">${shelf||`<div class="card" style="gap:6px">
+    <div style="font-size:15px;font-weight:500">Nothing on the shelf yet</div>
+    <div class="small">Add the book you\u2019re actually reading, then log your first session when you next put it down.</div></div>`}</div>
+  <button class="btn btn-${S.books.length?'secondary':'primary'} btn-block" data-act="add">Add a book</button>
   <div class="rule"></div>
-  <div class="spread">
-    <span class="kick">Your data lives on this device</span>
-    <span style="display:flex;gap:14px"><button class="link" data-act="export">Back up</button><button class="link" data-act="import">Restore</button></span>
+  <div class="spread" style="align-items:flex-start">
+    <span class="kick" style="padding-top:4px">Your data lives on this device</span>
+    <span style="display:flex;gap:14px;flex-wrap:wrap;justify-content:flex-end"><button class="link" data-act="export">Back up</button><button class="link" data-act="import">Restore</button><button class="link" data-act="wipe" style="color:var(--n500)">Start fresh</button></span>
   </div>`;
 }
 
@@ -281,7 +284,9 @@ function vBook(){
     <div style="font-size:13px;line-height:1.55;color:var(--n300);margin-top:7px">${esc(b.takeaways.filter(Boolean).join(' \u00b7 '))}${b.application?' \u2014 '+esc(b.application):''}</div></div>`:''}
   <div class="rule"></div>
   <div class="kick">Sessions \u00b7 newest first</div>
-  <div class="col">${hist||'<div class="card small">No sessions yet.</div>'}</div>`;
+  <div class="col">${hist||'<div class="card small">No sessions yet. Log one when you next put the book down.</div>'}</div>
+  <div class="rule"></div>
+  <button class="link" data-act="removebook" style="align-self:flex-start;color:var(--n500)">Remove this book from the shelf</button>`;
 }
 
 function vWizard(){
@@ -414,6 +419,12 @@ document.addEventListener('click',e=>{
   if(a==='savefinish'){
     b.finished=true;b.takeaways=[S.fin.t1,S.fin.t2,S.fin.t3];b.application=S.fin.app;
     save();S.view='book';render();return toast('Book closed. Takeaways kept.');}
+  if(a==='wipe'){
+    if(!confirm('Clear everything and start with an empty shelf?\n\nThis deletes all books, sessions and quiz questions on this device. Back up first if you want a copy.')) return;
+    S.books=[];save();S.bookId=null;S.item=null;S.view='library';render();return toast('Empty shelf. Add your first book.');}
+  if(a==='removebook'){
+    if(!confirm('Remove \u201c'+b.title+'\u201d and all '+b.sessions.length+' of its sessions?')) return;
+    S.books=S.books.filter(x=>x.id!==b.id);save();S.bookId=null;S.item=null;S.view='library';render();return toast('Removed.');}
   if(a==='export'){
     const blob=new Blob([JSON.stringify(S.books,null,2)],{type:'application/json'});
     const url=URL.createObjectURL(blob),el=document.createElement('a');

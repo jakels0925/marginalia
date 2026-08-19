@@ -1,6 +1,6 @@
 // Marginalia service worker — app shell cached so the app opens with no network.
 // Bump CACHE when you change any file in this folder.
-const CACHE = 'marginalia-v1';
+const CACHE = 'marginalia-v2';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {

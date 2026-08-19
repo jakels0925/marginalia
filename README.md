@@ -168,6 +168,45 @@ first.
 
 ---
 
+## Clearing the demo books and starting fresh
+
+The app ships with three example books so the screens aren't empty on first
+open. To wipe them:
+
+1. Open the app and scroll to the **bottom of the shelf screen**.
+2. Under the fading rule you'll see three links: *Back up* · *Restore* ·
+   **Start fresh**.
+3. Tap **Start fresh** → **OK**. Everything goes; the shelf is empty.
+4. Tap **Add a book** → Title `Atomic Habits`, Author `James Clear`, Pages
+   `320`, Type **Nonfiction** → *Put it on the shelf*.
+
+To drop just one book and keep the rest: open that book → scroll to the very
+bottom → **Remove this book from the shelf**.
+
+### Your first reading check
+
+There's nothing to recall yet, so the first pass is one-way — you log, you
+don't get quizzed. The quiz starts on visit two.
+
+1. Read as usual. When you put the book down, open the app → tap **Atomic
+   Habits** → **Log a session**.
+2. **Pages read** — from and to. Whatever you actually covered.
+3. **Core idea** — book closed. Say the main idea plainly in your own words.
+4. **Personal connection** — one real situation from your own life.
+5. **Pushback** — optional; *Skip this one* is fine.
+6. **For future you** — write one question you'll answer cold next time, and
+   the answer. Make it specific enough that guessing fails.
+7. **Fact check** — tap *Copy my answers + the check request*, paste it to
+   Claude in chat, then paste the reply into *Claude's notes* and tap a verdict
+   tag. Or skip it and add it later via the *add verdict* link on that session.
+8. **Save this session.**
+
+Next time you tap Atomic Habits, your question appears **first**, before
+anything else. Answer it in your head, tap *I've answered — show what I wrote*,
+then grade yourself. That's the loop.
+
+---
+
 ## Backing up your reading log
 
 Everything lives on the phone under one storage key. There is no cloud copy, by
