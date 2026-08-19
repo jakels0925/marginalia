@@ -1,0 +1,16 @@
+{
+  "name": "Marginalia — Reading Companion",
+  "short_name": "Marginalia",
+  "description": "Retrieval-practice journal for physical books: reflect unaided, quiz future you, test cold before you read on.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#161826",
+  "theme_color": "#161826",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

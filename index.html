@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Marginalia</title>
+<meta name="theme-color" content="#161826">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Marginalia">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{
+  --bg:#161826;--surface:#232532;--text:#e9e9ed;--accent:#9184d9;
+  --n300:#cfd3e5;--n400:#b2b6ca;--n500:#9397ab;--n600:#75798c;--n800:#3f424d;
+  --divider:rgba(233,233,237,.16);
+  --green:oklch(0.66 0.105 152);--greenT:oklch(0.78 0.09 152);
+  --plum:oklch(0.66 0.105 340);--plumT:oklch(0.78 0.09 340);
+  --gold:oklch(0.74 0.115 78);--goldT:oklch(0.86 0.07 78);
+  --s1:2.8px;--s2:5.6px;--s3:8.4px;--s4:11.2px;--s6:16.8px;--s8:22.4px;
+  --r-sm:4px;--r-md:8px;--r-lg:14px;
+  --font:-apple-system,"Inter",system-ui,sans-serif;
+  --mono:ui-monospace,Menlo,monospace;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{
+  background:var(--bg);color:var(--text);font-family:var(--font);
+  font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;
+  overscroll-behavior-y:none;
+}
+#app{
+  min-height:100%;max-width:520px;margin:0 auto;
+  padding:calc(env(safe-area-inset-top) + 18px) 20px calc(env(safe-area-inset-bottom) + 28px);
+  display:flex;flex-direction:column;gap:18px;
+}
+h1,h2,h3{font-weight:500;letter-spacing:-.02em;line-height:1.2;margin:0}
+.mono{font-family:var(--mono)}
+.kick{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--n600)}
+.muted{color:var(--n500)}
+:focus{outline:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+::selection{background:color-mix(in srgb,var(--accent) 30%,transparent)}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  font:500 15px/1.2 var(--font);color:var(--text);background:transparent;
+  border:1px solid transparent;border-radius:var(--r-md);
+  padding:12px 14px;min-height:46px;cursor:pointer;text-decoration:none;
+  -webkit-tap-highlight-color:transparent;
+}
+.btn-primary{color:var(--accent);border-color:var(--accent)}
+.btn-primary:active{background:color-mix(in srgb,var(--accent) 22%,transparent)}
+.btn-secondary{border-color:var(--divider)}
+.btn-secondary:active{background:rgba(233,233,237,.14)}
+.btn-ghost{color:var(--accent);border:0;min-height:38px;padding:6px 4px;font-size:13px}
+.btn-block{width:100%}
+.btn-gold{color:var(--goldT);border-color:var(--gold)}
+.btn-gold:active{background:color-mix(in srgb,var(--gold) 20%,transparent)}
+.btn:disabled{opacity:.45}
+
+.field{display:block}
+.field>label{display:block;font-size:12px;margin-bottom:5px;color:rgba(233,233,237,.7)}
+.input{
+  width:100%;min-height:46px;padding:11px 12px;font:400 16px/1.55 var(--font);
+  color:var(--text);caret-color:var(--accent);background:var(--surface);
+  border:1px solid var(--divider);border-radius:var(--r-md);
+}
+textarea.input{min-height:130px;resize:vertical}
+.input:focus-visible{border-color:var(--accent);outline-offset:0}
+
+.card{padding:14px 15px;border-radius:var(--r-md);background:var(--surface);box-shadow:0 0 0 1px var(--n800)}
+.gold-card{padding:15px;border-radius:var(--r-md);border:1px solid var(--gold);background:color-mix(in srgb,var(--gold) 8%,transparent)}
+.rule{height:1px;background:linear-gradient(to right,transparent,var(--divider) 40px,var(--divider) calc(100% - 40px),transparent)}
+.gold-rule{height:1px;background:linear-gradient(to right,transparent,color-mix(in srgb,var(--gold) 50%,transparent) 30px,color-mix(in srgb,var(--gold) 50%,transparent) calc(100% - 30px),transparent)}
+.tag{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:3px 7px;border-radius:5px}
+.tag-gold{border:1px solid var(--gold);color:var(--goldT)}
+.tag-n{background:var(--n800);color:#e4e7f5}
+.row{display:flex;gap:8px}
+.col{display:flex;flex-direction:column;gap:10px}
+.spread{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.grow{flex:1}
+
+.book{position:relative;padding:15px 15px 15px 19px;border-radius:var(--r-md);background:var(--surface);box-shadow:0 0 0 1px var(--n800);overflow:hidden;cursor:pointer;display:flex;flex-direction:column;gap:8px}
+.book:active{background:#2a2c3b}
+.book .bar{position:absolute;left:0;top:0;bottom:0;width:3px}
+.meta{font-family:var(--mono);font-size:10px;color:var(--n600);display:flex;gap:10px;flex-wrap:wrap}
+
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat .n{font-size:26px;font-weight:500;line-height:1.1;margin-top:4px}
+.stat .n small{font-size:12px;font-weight:400;color:var(--n500)}
+.spark{display:flex;align-items:flex-end;gap:2px;height:22px;padding-bottom:3px}
+.spark i{width:4px;border-radius:1px;display:block}
+
+.dots{display:flex;gap:4px}
+.dots i{flex:1;height:2px;border-radius:1px;display:block}
+.q{font-size:22px;font-weight:500;line-height:1.3;letter-spacing:-.015em;text-wrap:pretty}
+.prompt{font-size:20px;font-weight:500;line-height:1.32;letter-spacing:-.015em;text-wrap:pretty}
+.answer{font-size:14px;line-height:1.55}
+.gate{min-height:60vh;display:flex;flex-direction:column;justify-content:center;gap:20px;text-align:center;background:radial-gradient(110% 60% at 50% 10%,color-mix(in srgb,var(--gold) 11%,transparent),transparent 72%)}
+.toast{position:fixed;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom) + 20px);max-width:488px;margin:0 auto;padding:12px 14px;border-radius:var(--r-md);background:var(--n800);box-shadow:0 8px 24px rgba(0,0,0,.5);font-size:14px;text-align:center;z-index:90}
+.sesh{padding:14px 15px;border-radius:var(--r-md);background:var(--surface);box-shadow:0 0 0 1px var(--n800);display:flex;flex-direction:column;gap:9px}
+.seal{display:flex;gap:8px;align-items:flex-start;padding-top:2px}
+.seal i{width:14px;height:14px;border-radius:3px;border:1px solid color-mix(in srgb,var(--gold) 60%,transparent);flex:none;margin-top:3px;display:block}
+.small{font-size:12px;line-height:1.5;color:var(--n500)}
+.link{background:none;border:0;color:var(--accent);font:inherit;font-size:12px;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+"use strict";
+const KEY='marginalia.v1', DAY=86400000;
+const G='var(--green)', P='var(--plum)', GOLD='var(--gold)';
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const iso=d=>new Date(d).toISOString().slice(0,10);
+const ago=n=>iso(Date.now()-n*DAY);
+const dm=d=>new Date(d).toLocaleDateString(undefined,{day:'numeric',month:'short'});
+const uid=()=>'x'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+
+const NF=[
+ {kick:'Core idea',q:'In your own words, what was the main idea of these pages?',hint:'No quoting. If you can\u2019t say it plainly, you haven\u2019t got it yet.',ph:'Habits work because\u2026'},
+ {kick:'Personal connection',q:'Where does this land in your own life?',hint:'One real situation, not a general principle.',ph:'This explains why I\u2026'},
+ {kick:'Pushback',q:'Anything you disagree with, or that felt too neat?',hint:'Optional \u2014 but disagreement is the strongest form of attention.',ph:'I\u2019m not sure that\u2026',skip:true}];
+const FIC=[
+ {kick:'What happened',q:'What happened in these pages? Plot only.',hint:'No interpretation yet \u2014 just events, in order.',ph:'She leaves the house and\u2026'},
+ {kick:'Character',q:'Pick one character. What do they want, and what stands in the way?',hint:'Want and obstacle. That\u2019s the whole engine.',ph:'He wants\u2026 but\u2026'},
+ {kick:'Theme',q:'Any theme starting to surface?',hint:'Optional \u2014 a hunch is fine this early.',ph:'Something about\u2026',skip:true}];
+const LBL={nonfiction:['Core idea','My life','Pushback'],fiction:['What happened','Character','Theme']};
+
+function seed(){return [
+ {id:'b1',title:'Atomic Habits',author:'James Clear',type:'nonfiction',pages:320,finished:false,takeaways:null,application:'',sessions:[
+  {id:'s1',date:ago(9),from:1,to:48,a1:'Tiny changes compound. You do not rise to the level of your goals, you fall to the level of your systems.',a2:'My 20-minute morning routine keeps collapsing because I never built a system, only a resolution.',a3:'',quizQ:'Why does Clear say systems beat goals?',quizA:'Goals set a direction but only systems produce progress; goals also create a yo-yo effect once hit.',verdictTag:'held up',verdictNotes:'Accurate. Summaries also stress the "goals are for direction, systems for progress" framing.',reviews:[{date:ago(8),grade:'nailed'}]},
+  {id:'s2',date:ago(5),from:49,to:80,a1:'Habits are identity-based. Every action is a vote for the type of person you want to be.',a2:'I keep saying I want to read more instead of saying I am a reader. The label matters.',a3:'The identity framing feels slippery \u2014 it could excuse not changing anything concrete.',quizQ:'What does Clear mean by an identity-based habit?',quizA:'You start from who you want to be, then let each small action cast a vote for that identity, rather than chasing an outcome.',verdictTag:'partly off',verdictNotes:'Identity point is right. You skipped the outcome/process/identity three-layer model that sets it up.',reviews:[{date:ago(4),grade:'partial'}]},
+  {id:'s3',date:ago(1),from:81,to:112,a1:'The four laws: make it obvious, attractive, easy, satisfying. Cues and environment do most of the work.',a2:'My phone sitting on the desk is the cue that kills my focus. Environment beats willpower.',a3:'',quizQ:'What are the four laws of behaviour change, and which one fails first for you?',quizA:'Obvious, attractive, easy, satisfying. Satisfying fails first for me \u2014 nothing marks the end of a reading session, so there is no reward.',verdictTag:'',verdictNotes:'',reviews:[]}]},
+ {id:'b2',title:'The Psychology of Money',author:'Morgan Housel',type:'nonfiction',pages:252,finished:false,takeaways:null,application:'',sessions:[
+  {id:'s4',date:ago(2),from:1,to:34,a1:'Financial outcomes are driven more by behaviour and luck than by intelligence or technical skill.',a2:'I have been reading about index funds for two years and still not opened the account. Knowledge was never the gap.',a3:'',quizQ:'What is Housel\u2019s distinction between risk and luck?',quizA:'They are mirror images \u2014 both mean outcomes are shaped by forces outside individual effort, so judge decisions, not results.',verdictTag:'',verdictNotes:'',reviews:[]}]},
+ {id:'b3',title:'Klara and the Sun',author:'Kazuo Ishiguro',type:'fiction',pages:303,finished:false,takeaways:null,application:'',sessions:[
+  {id:'s5',date:ago(3),from:1,to:62,a1:'Klara is an artificial friend in a store window. She is chosen by Josie, a sick girl, and moves into her house.',a2:'Klara wants to be chosen and then to keep Josie well; the obstacle is that she barely understands what is wrong.',a3:'Observation as a form of devotion.',quizQ:'What does Klara believe the Sun can do?',quizA:'She treats the Sun as a source of nourishment and healing, and begins bargaining with it on Josie\u2019s behalf.',verdictTag:'held up',verdictNotes:'Matches published reviews on Klara\u2019s solar faith. The bargaining beat comes slightly later than you had it.',reviews:[{date:ago(2),grade:'nailed'}]}]}];}
+
+let S={books:[],view:'library',bookId:null,step:0,draft:null,phase:'ask',item:null,copied:false,
+  nb:{title:'',author:'',pages:'',type:'nonfiction'},fin:{t1:'',t2:'',t3:'',app:''}};
+
+function load(){
+  try{const r=localStorage.getItem(KEY); if(r){const b=JSON.parse(r); if(Array.isArray(b)&&b.length){S.books=b;return;}}}catch(e){}
+  S.books=seed(); save();
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S.books));}catch(e){toast('Couldn\u2019t save \u2014 storage is full or blocked');}}
+let tt;function toast(m){const el=document.createElement('div');el.className='toast';el.textContent=m;document.body.appendChild(el);clearTimeout(tt);tt=setTimeout(()=>el.remove(),2600);}
+const book=()=>S.books.find(b=>b.id===S.bookId);
+const acc=b=>b.type==='fiction'?P:G;
+const accT=b=>b.type==='fiction'?'var(--plumT)':'var(--greenT)';
+const lastPage=b=>b.sessions.length?b.sessions[b.sessions.length-1].to:0;
+
+function due(b){
+  const out=[];
+  (b.sessions||[]).forEach(s=>{
+    if(!s.quizQ)return;
+    const rv=s.reviews||[], age=Math.floor((Date.now()-new Date(s.date).getTime())/DAY);
+    if(!rv.length) out.push({s,kind:'cold',label:'From your last session'});
+    else{const next=[3,7,21][rv.length-1]; if(next!==undefined&&age>=next) out.push({s,kind:'day',label:'Day '+next+' review'});}
+  });
+  return out.sort((a,b2)=>(a.kind==='cold'?-1:0)-(b2.kind==='cold'?-1:0));
+}
+function allReviews(){const o=[];S.books.forEach(b=>b.sessions.forEach(s=>(s.reviews||[]).forEach(r=>o.push(r))));return o.sort((a,b)=>new Date(a.date)-new Date(b.date));}
+function streak(){
+  const d=new Set();S.books.forEach(b=>b.sessions.forEach(s=>d.add(iso(s.date))));
+  let start=-1;for(let i=0;i<2;i++){if(d.has(ago(i))){start=i;break;}}
+  if(start<0)return 0;
+  let n=0;for(let i=start;i<400;i++){if(d.has(ago(i)))n++;else break;}
+  return n;}
+const gcol=g=>g==='nailed'?G:g==='partial'?GOLD:'var(--n600)';
+function steps(type){
+  const p=type==='fiction'?FIC:NF;
+  return [{range:true,kick:'Pages read',q:'How far did you get this session?'}]
+    .concat(p.map(x=>Object.assign({text:true},x)))
+    .concat([{quiz:true,kick:'For future you',q:'Write one question you\u2019ll answer cold next time.',hint:'Make it hard enough that guessing won\u2019t work.'},
+             {check:true,kick:'Fact check',q:'Hand your answers to Claude for a verdict.',hint:'Optional \u2014 you can add the verdict later.'}]);
+}
+
+/* ---------- views ---------- */
+function vLibrary(){
+  const rv=allReviews();
+  const score=rv.reduce((a,r)=>a+(r.grade==='nailed'?1:r.grade==='partial'?.5:0),0);
+  const pct=rv.length?Math.round(score/rv.length*100):0;
+  const bars=(rv.length?rv:[{grade:'blank'}]).slice(-8)
+    .map(r=>`<i style="height:${r.grade==='nailed'?18:r.grade==='partial'?11:5}px;background:${gcol(r.grade)}"></i>`).join('');
+  let total=0;
+  const shelf=S.books.map(b=>{
+    const d=due(b);total+=d.length;
+    return `<div class="book" data-act="open" data-id="${b.id}">
+      <span class="bar" style="background:${acc(b)}"></span>
+      <div style="display:flex;align-items:flex-start;gap:10px">
+        <div class="grow"><div style="font-size:16px;font-weight:500;letter-spacing:-.01em">${esc(b.title)}</div>
+        <div style="font-size:12px;color:var(--n500);margin-top:2px">${esc(b.author)}</div></div>
+        ${d.length?`<span class="tag tag-gold">recall ${d.length}</span>`:''}
+      </div>
+      <div class="meta"><span style="color:${acc(b)}">${b.type}</span>
+        <span>${b.sessions.length} session${b.sessions.length===1?'':'s'}</span>
+        <span>p. ${lastPage(b)}/${b.pages}</span>
+        ${b.finished?'<span style="color:var(--goldT)">finished</span>':''}</div>
+    </div>`;}).join('');
+  return `
+  <div>
+    <div class="kick">Your shelf \u00b7 ${dm(Date.now())}</div>
+    <h1 style="font-size:29px;margin-top:6px">Marginalia</h1>
+  </div>
+  <div class="stats">
+    <div class="card stat"><div class="kick">Streak</div><div class="n">${streak()}<small> days</small></div></div>
+    <div class="card stat"><div class="kick">Recall</div>
+      <div style="display:flex;align-items:flex-end;gap:8px;margin-top:4px">
+        <div class="n" style="margin:0">${pct}<small>%</small></div><div class="spark">${bars}</div></div></div>
+  </div>
+  ${total?`<div class="gold-card" style="display:flex;align-items:center;gap:12px">
+    <span style="width:6px;height:6px;border-radius:50%;background:var(--gold);flex:none"></span>
+    <div><div style="font-size:14px;color:var(--goldT)">${total===1?'1 retrieval check waiting':total+' retrieval checks waiting'}</div>
+    <div class="kick" style="margin-top:3px">Answer from memory before you read on</div></div></div>`:''}
+  <div class="col">${shelf||'<div class="card small">Nothing on the shelf yet.</div>'}</div>
+  <button class="btn btn-secondary btn-block" data-act="add">Add a book</button>
+  <div class="rule"></div>
+  <div class="spread">
+    <span class="kick">Your data lives on this device</span>
+    <span style="display:flex;gap:14px"><button class="link" data-act="export">Back up</button><button class="link" data-act="import">Restore</button></span>
+  </div>`;
+}
+
+function vQuiz(){
+  const it=S.item; if(!it) return vBook();
+  const head=`<div class="spread"><span class="kick" style="color:var(--goldT)">${esc(it.label)}</span>
+    <button class="btn btn-ghost" data-act="book">Later</button></div>
+    <div class="gold-rule"></div>
+    <div class="kick">Written ${dm(it.s.date)} \u00b7 pp. ${it.s.from}\u2013${it.s.to}</div>
+    <div class="q">${esc(it.s.quizQ)}</div>`;
+  if(S.phase==='ask') return head+`
+    <div class="card small" style="color:var(--n400)">Say it out loud or think it through. Don\u2019t open the book, and don\u2019t scroll back through your notes.</div>
+    <button class="btn btn-gold btn-block" data-act="reveal">I\u2019ve answered \u2014 show what I wrote</button>`;
+  const gr=[['nailed','Nailed it','said it all',G],['partial','Partly','gist, not detail',GOLD],['blank','Blank','nothing came','var(--n600)']]
+    .map(([g,l,h,c])=>`<button class="btn btn-secondary" style="justify-content:flex-start;gap:10px" data-act="grade" data-g="${g}">
+      <span style="width:7px;height:7px;border-radius:50%;flex:none;background:${c}"></span>
+      <span style="font-weight:500">${l}</span><span class="small">${h}</span></button>`).join('');
+  return head+`
+    <div class="gold-card"><div class="kick" style="color:var(--goldT)">What past you wrote</div>
+      <div class="answer" style="margin-top:7px">${esc(it.s.quizA)}</div></div>
+    <div><div class="kick" style="margin-bottom:8px">How close were you?</div><div class="col">${gr}</div></div>`;
+}
+
+function vBook(){
+  const b=book(); if(!b) return vLibrary();
+  const d=due(b), L=LBL[b.type];
+  const hist=b.sessions.slice().reverse().map(s=>{
+    const last=(s.reviews||[])[ (s.reviews||[]).length-1 ];
+    const ans=[s.a1,s.a2,s.a3].map((t,i)=>t?`<div><div class="kick">${L[i]}</div>
+      <div style="font-size:13px;line-height:1.55;color:var(--n300);margin-top:3px">${esc(t)}</div></div>`:'').join('');
+    return `<div class="sesh">
+      <div class="meta spread"><span>${dm(s.date)}</span><span>pp. ${s.from}\u2013${s.to}</span></div>
+      ${ans}
+      <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+        ${s.verdictTag?`<span class="tag tag-gold">${esc(s.verdictTag)}</span>`:''}
+        ${last?`<span class="tag tag-n">recall: ${last.grade}</span>`:''}
+        ${!s.verdictTag?`<button class="link" data-act="addverdict" data-sid="${s.id}">add verdict</button>`:''}
+      </div>
+      ${s.verdictNotes?`<div class="small">${esc(s.verdictNotes)}</div>`:''}
+      <div class="seal"><i></i><div class="small" style="color:var(--n400)">${esc(s.quizQ||'No question written for this session')}</div></div>
+    </div>`;}).join('');
+  return `
+  <button class="btn btn-ghost" style="align-self:flex-start" data-act="library">\u2190 Shelf</button>
+  <div>
+    <h2 style="font-size:24px">${esc(b.title)}</h2>
+    <div style="font-size:13px;color:var(--n500);margin-top:4px">${esc(b.author)}</div>
+    <div class="meta" style="margin-top:8px"><span style="color:${acc(b)}">${b.type}</span>
+      <span>${b.sessions.length} session${b.sessions.length===1?'':'s'}</span><span>p. ${lastPage(b)}/${b.pages}</span></div>
+  </div>
+  ${d.length?`<div class="gold-card" data-act="quiz" style="cursor:pointer">
+    <div class="kick" style="color:var(--goldT)">Before you read on</div>
+    <div style="font-size:15px;font-weight:500;margin-top:6px">${esc(d[0].s.quizQ)}</div>
+    <div class="kick" style="margin-top:5px">${esc(d[0].label)} \u00b7 pp. ${d[0].s.from}\u2013${d[0].s.to}</div></div>`:''}
+  <div class="row"><button class="btn btn-primary grow" data-act="session">Log a session</button>
+    <button class="btn btn-secondary" data-act="finish">Finish book</button></div>
+  ${b.takeaways?`<div class="card"><div class="kick" style="color:var(--goldT)">Closing note</div>
+    <div style="font-size:13px;line-height:1.55;color:var(--n300);margin-top:7px">${esc(b.takeaways.filter(Boolean).join(' \u00b7 '))}${b.application?' \u2014 '+esc(b.application):''}</div></div>`:''}
+  <div class="rule"></div>
+  <div class="kick">Sessions \u00b7 newest first</div>
+  <div class="col">${hist||'<div class="card small">No sessions yet.</div>'}</div>`;
+}
+
+function vWizard(){
+  const b=book(); if(!b||!S.draft) return vBook();
+  const all=steps(b.type), i=Math.min(S.step,all.length-1), s=all[i], d=S.draft;
+  const key=['','a1','a2','a3'][i]||'';
+  const dots=all.map((x,j)=>`<i style="background:${j<=i?((x.quiz||x.check)?GOLD:acc(b)):'var(--n800)'}"></i>`).join('');
+  let body='';
+  if(s.range) body=`<div class="row">
+    <label class="field grow"><span>From page</span><input class="input mono" inputmode="numeric" data-k="from" value="${esc(d.from)}"></label>
+    <label class="field grow"><span>To page</span><input class="input mono" inputmode="numeric" data-k="to" value="${esc(d.to)}"></label></div>`;
+  else if(s.text) body=`<div><textarea class="input" style="min-height:150px" placeholder="${esc(s.ph)}" data-k="${key}">${esc(d[key])}</textarea>
+    <div class="meta spread" style="margin-top:6px"><span id="wc">${(d[key]||'').trim().split(/\s+/).filter(Boolean).length} words</span><span>book closed</span></div></div>`;
+  else if(s.quiz) body=`<div class="gold-card" style="display:flex;flex-direction:column;gap:12px">
+    <label class="field"><span>Question for future you</span><textarea class="input" style="min-height:74px" data-k="quizQ" placeholder="Why does Clear say systems beat goals?">${esc(d.quizQ)}</textarea></label>
+    <label class="field"><span>Answer \u2014 sealed until you\u2019ve tried</span><textarea class="input" style="min-height:96px" data-k="quizA" placeholder="Goals set direction but\u2026">${esc(d.quizA)}</textarea></label>
+    <div class="kick" style="line-height:1.5;text-transform:none;letter-spacing:0">This is the first thing you\u2019ll see next time you open ${esc(b.title)}.</div></div>`;
+  else body=`<div class="col" style="gap:14px">
+    <button class="btn btn-secondary btn-block" data-act="copy">${S.copied?'Copied \u2014 paste it into Claude':'Copy my answers + the check request'}</button>
+    <div class="kick" style="line-height:1.6;text-transform:none;letter-spacing:0">Paste it into Claude. It checks you against reviews, summaries and official material \u2014 never a copyrighted full text \u2014 and returns a verdict.</div>
+    <div><div class="kick" style="margin-bottom:8px">Verdict</div><div class="row">
+      ${['held up','partly off','missed it'].map(t=>`<button class="btn grow" data-act="vtag" data-t="${t}" style="font-size:13px;padding:10px 4px;border-color:${d.verdictTag===t?GOLD:'var(--divider)'};color:${d.verdictTag===t?'var(--goldT)':'var(--n400)'};background:${d.verdictTag===t?'color-mix(in srgb,var(--gold) 12%,transparent)':'transparent'}">${t}</button>`).join('')}
+    </div></div>
+    <label class="field"><span>Claude\u2019s notes</span><textarea class="input" data-k="verdictNotes" placeholder="Paste the verdict here \u2014 it saves next to your unaided answer, permanently.">${esc(d.verdictNotes)}</textarea></label></div>`;
+  return `
+  <div class="spread"><button class="btn btn-ghost" data-act="wback">\u2190 Back</button><span class="kick">Step ${i+1} of ${all.length}</span></div>
+  <div class="dots">${dots}</div>
+  <div class="kick" style="color:${(s.quiz||s.check)?'var(--goldT)':accT(b)};margin-top:6px">${s.kick}</div>
+  <div class="prompt">${esc(s.q)}</div>
+  ${s.hint?`<div class="small">${esc(s.hint)}</div>`:''}
+  ${body}
+  <div class="grow"></div>
+  <button class="btn btn-primary btn-block" data-act="wnext">${s.check?'Save this session':s.quiz?'Seal it':'Next'}</button>
+  ${s.skip?'<button class="btn btn-ghost" style="align-self:center" data-act="wskip">Skip this one</button>':''}`;
+}
+
+function vAdd(){
+  const nb=S.nb;
+  const opt=(t,l,h,c)=>`<button class="btn" data-act="ntype" data-t="${t}" style="justify-content:flex-start;gap:10px;text-align:left;border-color:${nb.type===t?c:'var(--divider)'};background:${nb.type===t?`color-mix(in srgb,${c} 10%,transparent)`:'transparent'}">
+    <span style="width:7px;height:7px;border-radius:50%;flex:none;background:${c}"></span>
+    <span style="display:flex;flex-direction:column;gap:2px"><span style="font-weight:500">${l}</span><span class="small">${h}</span></span></button>`;
+  return `
+  <button class="btn btn-ghost" style="align-self:flex-start" data-act="library">\u2190 Shelf</button>
+  <h2 style="font-size:24px">Add a book</h2>
+  <label class="field"><span>Title</span><input class="input" data-nk="title" value="${esc(nb.title)}" placeholder="The Psychology of Money"></label>
+  <label class="field"><span>Author</span><input class="input" data-nk="author" value="${esc(nb.author)}" placeholder="Morgan Housel"></label>
+  <label class="field"><span>Pages</span><input class="input mono" inputmode="numeric" data-nk="pages" value="${esc(nb.pages)}" placeholder="252"></label>
+  <div class="field"><label>Type \u2014 this sets the reflection prompts</label><div class="col">
+    ${opt('nonfiction','Nonfiction','core idea \u00b7 personal connection \u00b7 pushback',G)}
+    ${opt('fiction','Fiction','what happened \u00b7 want &amp; obstacle \u00b7 theme',P)}</div></div>
+  <div class="grow"></div>
+  <button class="btn btn-primary btn-block" data-act="savebook">Put it on the shelf</button>`;
+}
+
+function vFinish(){
+  const b=book(); if(!b) return vLibrary();
+  const f=S.fin;
+  return `
+  <button class="btn btn-ghost" style="align-self:flex-start" data-act="book">\u2190 ${esc(b.title)}</button>
+  <div class="kick" style="color:var(--goldT)">Closing the book</div>
+  <div class="prompt">Three takeaways, from memory. Then one thing you\u2019ll actually do.</div>
+  ${[1,2,3].map(n=>`<label class="field"><span>Takeaway ${n}</span><textarea class="input" style="min-height:70px" data-fk="t${n}" placeholder="${n===1?'The one thing I\u2019d tell someone about this book\u2026':'And\u2026'}">${esc(f['t'+n])}</textarea></label>`).join('')}
+  <div class="gold-card"><label class="field"><span>One concrete application \u2014 this week</span>
+    <textarea class="input" style="min-height:86px" data-fk="app" placeholder="Put my running shoes by the door tonight and\u2026">${esc(f.app)}</textarea></label></div>
+  <div class="grow"></div>
+  <button class="btn btn-primary btn-block" data-act="savefinish">Close the book</button>`;
+}
+
+function render(){
+  const v={library:vLibrary,book:vBook,quiz:vQuiz,wizard:vWizard,add:vAdd,finish:vFinish}[S.view]||vLibrary;
+  const app=document.getElementById('app');
+  app.innerHTML=v();
+  app.className=S.view==='quiz'&&S.phase==='ask'?'gate-wrap':'';
+  window.scrollTo(0,0);
+}
+
+/* ---------- actions ---------- */
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-act]'); if(!t) return;
+  const a=t.dataset.act, b=book();
+  if(a==='open'){const bb=S.books.find(x=>x.id===t.dataset.id),d=due(bb);
+    S.bookId=bb.id; S.item=d[0]||null; S.phase='ask'; S.view=d.length?'quiz':'book'; return render();}
+  if(a==='library'){S.view='library';return render();}
+  if(a==='book'){S.view='book';return render();}
+  if(a==='add'){S.view='add';return render();}
+  if(a==='quiz'){S.item=due(b)[0]||null;S.phase='ask';S.view='quiz';return render();}
+  if(a==='reveal'){S.phase='reveal';return render();}
+  if(a==='grade'){
+    const g=t.dataset.g,it=S.item;
+    const s=b.sessions.find(x=>x.id===it.s.id);
+    s.reviews=(s.reviews||[]).concat([{date:iso(Date.now()),grade:g}]);
+    save(); S.item=null; S.view='book'; render();
+    return toast(g==='nailed'?'Logged. That one\u2019s sticking.':g==='partial'?'Logged \u2014 it\u2019ll come back sooner.':'Logged. Worth a reread of those pages.');}
+  if(a==='session'){S.view='wizard';S.step=0;S.copied=false;
+    S.draft={from:String(lastPage(b)+1),to:'',a1:'',a2:'',a3:'',quizQ:'',quizA:'',verdictTag:'',verdictNotes:''};return render();}
+  if(a==='addverdict'){const s=b.sessions.find(x=>x.id===t.dataset.sid);
+    S.view='wizard';S.step=steps(b.type).length-1;S.copied=false;
+    S.draft={editId:s.id,from:String(s.from),to:String(s.to),a1:s.a1,a2:s.a2,a3:s.a3,quizQ:s.quizQ,quizA:s.quizA,verdictTag:'',verdictNotes:''};return render();}
+  if(a==='wback'){if(S.step===0){S.view='book';}else{S.step--;}return render();}
+  if(a==='wskip'){S.step++;return render();}
+  if(a==='vtag'){S.draft.verdictTag=S.draft.verdictTag===t.dataset.t?'':t.dataset.t;return render();}
+  if(a==='copy'){
+    const d=S.draft,fic=b.type==='fiction';
+    const txt='I just read '+b.title+' by '+b.author+', pages '+d.from+'\u2013'+d.to+
+      '. Below are my answers, written from memory without re-reading. Check them against real public sources \u2014 reviews, summaries, official material \u2014 not a copyrighted full text. Verdict per answer: held up / partly off / missed it, with short notes.\n\n'+
+      (fic?'What happened: ':'Core idea: ')+d.a1+'\n'+
+      (fic?'Character want/obstacle: ':'Personal connection: ')+d.a2+'\n'+
+      (d.a3?(fic?'Emerging theme: ':'Pushback: ')+d.a3+'\n':'');
+    const done=()=>{S.copied=true;render();toast('Copied to clipboard');};
+    if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done,()=>fallbackCopy(txt,done));
+    else fallbackCopy(txt,done);
+    return;}
+  if(a==='wnext'){
+    const all=steps(b.type),i=Math.min(S.step,all.length-1);
+    if(!all[i].check){S.step=i+1;return render();}
+    const d=S.draft;
+    if(d.editId){const s=b.sessions.find(x=>x.id===d.editId);s.verdictTag=d.verdictTag;s.verdictNotes=d.verdictNotes;save();S.view='book';S.draft=null;S.step=0;render();return toast('Verdict saved with that session.');}
+    b.sessions.push({id:uid(),date:iso(Date.now()),from:Number(d.from)||0,to:Number(d.to)||Number(d.from)||0,
+      a1:d.a1,a2:d.a2,a3:d.a3,quizQ:d.quizQ,quizA:d.quizA,verdictTag:d.verdictTag,verdictNotes:d.verdictNotes,reviews:[]});
+    save();S.view='book';S.draft=null;S.step=0;render();
+    return toast(d.quizQ?'Session saved. Your question is sealed.':'Session saved.');}
+  if(a==='ntype'){S.nb.type=t.dataset.t;return render();}
+  if(a==='savebook'){
+    if(!S.nb.title.trim())return toast('It needs a title at least.');
+    const nb={id:uid(),title:S.nb.title.trim(),author:S.nb.author.trim()||'Unknown',type:S.nb.type,
+      pages:Number(S.nb.pages)||300,finished:false,takeaways:null,application:'',sessions:[]};
+    S.books.push(nb);save();S.nb={title:'',author:'',pages:'',type:'nonfiction'};
+    S.bookId=nb.id;S.view='book';render();return toast('On the shelf.');}
+  if(a==='finish'){S.view='finish';S.fin={t1:'',t2:'',t3:'',app:''};return render();}
+  if(a==='savefinish'){
+    b.finished=true;b.takeaways=[S.fin.t1,S.fin.t2,S.fin.t3];b.application=S.fin.app;
+    save();S.view='book';render();return toast('Book closed. Takeaways kept.');}
+  if(a==='export'){
+    const blob=new Blob([JSON.stringify(S.books,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob),el=document.createElement('a');
+    el.href=url;el.download='marginalia-'+iso(Date.now())+'.json';document.body.appendChild(el);el.click();el.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),2000);return toast('Backup file created.');}
+  if(a==='import'){
+    const inp=document.createElement('input');inp.type='file';inp.accept='application/json,.json';
+    inp.onchange=()=>{const f=inp.files[0];if(!f)return;const fr=new FileReader();
+      fr.onload=()=>{try{const j=JSON.parse(fr.result);if(!Array.isArray(j))throw 0;
+        S.books=j;save();S.view='library';render();toast('Restored '+j.length+' books.');}
+        catch(err){toast('That file didn\u2019t look like a Marginalia backup.');}};
+      fr.readAsText(f);};
+    inp.click();return;}
+});
+
+function fallbackCopy(txt,done){
+  const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';
+  document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}ta.remove();done();
+}
+
+document.addEventListener('input',e=>{
+  const el=e.target;
+  if(el.dataset.k&&S.draft){S.draft[el.dataset.k]=el.value;
+    const wc=document.getElementById('wc');
+    if(wc&&['a1','a2','a3'].includes(el.dataset.k)) wc.textContent=el.value.trim().split(/\s+/).filter(Boolean).length+' words';}
+  else if(el.dataset.nk) S.nb[el.dataset.nk]=el.value;
+  else if(el.dataset.fk) S.fin[el.dataset.fk]=el.value;
+});
+
+load();render();
+if('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+</script>
+</body>
+</html>
